@@ -1,7 +1,11 @@
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.*;
 import Enum.*;
+import com.sun.xml.internal.bind.v2.runtime.reflect.Lister;
+import sun.nio.cs.ext.PCK;
 
 /**
  * Created by Brandon on 06/05/2017.
@@ -182,5 +186,115 @@ public class Client {
         return 0;
     }
 
+
+    public int reveiveFile(String fileName, String path, String localFileName, String address, int port){
+
+        DatagramPacket RRQPacket;
+        DatagramPacket data;
+        DatagramPacket ACK;
+        FileOutputStream file;
+        boolean receptionOver = false;
+
+        try{
+            // Ouverture de la connexion sur le premier port libre
+            int freePort = Commun.firstAvailablePort(1024,2048);
+            this.clientSocket = new DatagramSocket(freePort);
+            this.serverIp = InetAddress.getByName(address);
+            this.serverPort = port;
+
+            //vue.getTxtInfoArea().append("Connecté au serveur  " + serverIp + ":" + serverPort;
+
+            // Envoi du RRQ
+            buffer = paquetWRRQ(fileName,PacketType.RRQ.code);
+            RRQPacket = new DatagramPacket(buffer,buffer.length,serverIp,serverPort);
+            clientSocket.send(RRQPacket);
+
+            // Création du fichier
+            File localFile = new File(path+localFileName);
+
+            // S'il existe déjà dans le répertoire
+            if (localFile.exists()){
+                //vue.getTxtInfoArea.append("Erreur -4 : Le fichier "+(path+localFileName)+" existe déjà dans ce répertoire.\n");
+                return -4;
+            }
+
+            // Ouverture d'un flux de données entrantes
+            file = new FileOutputStream(path+localFileName);
+            //vue.getTxtInfoArea.append("Création du fichier réussie \n");
+
+            while (!receptionOver){
+
+                // Réception du packet de donnée
+                buffer = new byte[516];
+                data = new DatagramPacket(buffer,buffer.length);
+                clientSocket.receive(data);
+                serverPort = data.getPort();
+
+                // Si le packet contient des données :
+                if (buffer[1] == PacketType.DATA.code){
+
+
+                    // On récupère les données reçue et on les écrit dans le fichier
+                    for(int x = 4 ; x < buffer.length ; x++){
+                        file.write(buffer[x]);
+                    }
+                    byte blockNumber = buffer[2];
+                    byte blockNumber2 = buffer[3];
+
+                    // On construit un ACK
+                    buffer = new byte[516];
+                    buffer[0] = 0;
+                    buffer[1] = (byte) PacketType.ACK.code;
+                    buffer[2] = blockNumber;
+                    buffer[3] = blockNumber2;
+
+                    ACK = new DatagramPacket(buffer,buffer.length,serverIp,serverPort);
+                    clientSocket.send(ACK);
+
+                    receptionOver = data.getLength()<512 ;
+
+                }
+
+                // Sinon on renvoi l'erreur que le serveur nous a envoyé
+                else if (buffer[1] == PacketType.ERROR.code){
+
+                    System.out.println(ServerError.getStringFromValue(buffer[3]).libelle);
+                    //vue.getTxtInfoArea().append(ServerError.getStringFromValue(buffer[3]).libelle +"\n");
+                    return buffer[3];
+
+                }
+
+                //vue.getTxtInfoArea().append("Le fichier à bien été reçu \n ");
+                file.close();
+
+            }
+
+
+        } catch (UnknownHostException e){
+            System.out.print("Erreur -1 : Ip indéterminée ");
+            e.printStackTrace();
+            return -1;
+
+        } catch (SocketException e){
+            System.out.println("Erreur -2 : Problème de création ou d'accès au socket");
+            e.printStackTrace();
+            return -2;
+        } catch (IOException e){
+            System.out.println("Erreur -3 : Problème réseau");
+            e.printStackTrace();
+            return -3;
+        } catch (StackOverflowError e) {
+            System.out.println("Erreur -5 : Espace disque insuffisant");
+            e.printStackTrace();
+            return -5;
+        } catch (Exception e) {
+            System.out.println("Erreur -6 : Problème inconnu");
+            e.printStackTrace();
+            return -6;
+        } finally {
+            clientSocket.close();
+        }
+        return 0;
+    }
 
 }
