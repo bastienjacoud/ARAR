@@ -30,7 +30,24 @@ public class Controller {
 	@FXML
 	private Button btRec;
 
-	private MainClient mainClient;
+	private MainClient _mainClient;
+
+	public Controller()
+	{
+
+	}
+
+	@FXML
+	private void Initialize()
+	{
+
+	}
+
+	public void SetMain (MainClient mainClient)
+	{
+		this._mainClient = mainClient;
+
+	}
 
 
 
