@@ -19,6 +19,11 @@ public class Client {
     private int serverPort = 69;
     private InetAddress serverIp;
 
+    private Vue vue;
+
+    public Client(Vue ait){
+        this.vue = ait;
+    }
 
     public byte[] paquetWRRQ(String fileName, int operationCode){
 
@@ -79,6 +84,9 @@ public class Client {
                 // On récupère le port alloué part le serveur pour cette communication
                 serverPort = receivedPacket.getPort();
 
+                vue.getTxtInfoArea().append("Serveur - "+serverIp+":"+serverPort+"\n");
+                vue.repaint();
+
                 // On clear les buffers
                 buffer = new byte[516];
                 fileDatas = new byte[512];
@@ -87,7 +95,10 @@ public class Client {
                 // On essaye d'ouvrir le fichier
                 try{
                     file = new FileInputStream(path+"/"+fileName);
+                    vue.getTxtInfoArea().append("Ouverture du fichier réussi\n");
+                    vue.repaint();
                 }catch (Exception ex){
+                    vue.getTxtInfoArea().append("Erreur -1 : Echec de l'ouverture du fichier\n");
                     System.out.println("Erreur, impossible d'ouvrir le fichier");
                     return -1 ;
                 }
@@ -125,6 +136,7 @@ public class Client {
                         }
                         ttl++;
                         if (ttl > 30 ){
+                            vue.getTxtInfoArea().append("Erreur -2 : Dépassement de délai\n");
                             System.out.println("ERROR -2 : Dépassement de délai");
                             return (-2) ;
                         }
@@ -151,6 +163,7 @@ public class Client {
             }
 
             else if (receptionBuffer[1] == PacketType.ERROR.code){
+                vue.getTxtInfoArea().append( ServerError.getStringFromValue(receptionBuffer[3]).libelle +"\n");
                 System.out.println(ServerError.getStringFromValue(receptionBuffer[3]).libelle);
                 //vue.getTextInfoArea().append(ServerError.getStringFromValue(receptionBuffer[3]).libelle + "\n");
                 return receptionBuffer[3];
@@ -162,23 +175,23 @@ public class Client {
 
         } catch (UnknownHostException e) {
             System.out.println("Erreur -1 : IP indéterminée");
-            //vue.getTxtInfoArea().append("Erreur -1 : IP indéterminée\n");
+            vue.getTxtInfoArea().append("Erreur -1 : IP indéterminée\n");
             return -1;
         } catch (SocketException e) {
             System.out.println("Erreur -2 : Problème de création ou d'accès au socket");
-            //vue.getTxtInfoArea().append("Erreur -2 : Problème de création ou d'accès au socket\n");
+            vue.getTxtInfoArea().append("Erreur -2 : Problème de création ou d'accès au socket\n");
             return -2;
         } catch (IOException e) {
             System.out.println("Erreur -3 : Problème réseau");
-            //vue.getTxtInfoArea().append("Erreur -3 : Problème réseau\n");
+            vue.getTxtInfoArea().append("Erreur -3 : Problème réseau\n");
             return -3;
         } catch (StackOverflowError e) {
             System.out.println("Erreur -5 : Espace disque insuffisant");
-            //vue.getTxtInfoArea().append("Erreur -5 : Espace disque insuffisant\n");
+            vue.getTxtInfoArea().append("Erreur -5 : Espace disque insuffisant\n");
             return -5;
         } catch (Exception e) {
             System.out.println("Erreur -6 : Problème inconnu");
-            //vue.getTxtInfoArea().append("Erreur -6 : Problème inconnu\n");
+            vue.getTxtInfoArea().append("Erreur -6 : Problème inconnu\n");
             return -6;
         }finally {
             clientSocket.close();
@@ -187,7 +200,7 @@ public class Client {
     }
 
 
-    public int reveiveFile(String fileName, String path, String localFileName, String address, int port){
+    public int receiveFile(String fileName, String path, String localFileName, String address, int port){
 
         DatagramPacket RRQPacket;
         DatagramPacket data;
@@ -202,7 +215,8 @@ public class Client {
             this.serverIp = InetAddress.getByName(address);
             this.serverPort = port;
 
-            //vue.getTxtInfoArea().append("Connecté au serveur  " + serverIp + ":" + serverPort;
+            vue.getTxtInfoArea().append("Connecté au serveur  " + serverIp + ":" + serverPort+"\n");
+            vue.repaint();
 
             // Envoi du RRQ
             buffer = paquetWRRQ(fileName,PacketType.RRQ.code);
@@ -214,13 +228,14 @@ public class Client {
 
             // S'il existe déjà dans le répertoire
             if (localFile.exists()){
-                //vue.getTxtInfoArea.append("Erreur -4 : Le fichier "+(path+localFileName)+" existe déjà dans ce répertoire.\n");
+                vue.getTxtInfoArea().append("Erreur -4 : Le fichier "+(path+localFileName)+" existe déjà dans ce répertoire.\n");
                 return -4;
             }
 
             // Ouverture d'un flux de données entrantes
             file = new FileOutputStream(path+localFileName);
-            //vue.getTxtInfoArea.append("Création du fichier réussie \n");
+            vue.getTxtInfoArea().append("Création du fichier réussie \n");
+            vue.repaint();
 
             while (!receptionOver){
 
@@ -259,35 +274,41 @@ public class Client {
                 else if (buffer[1] == PacketType.ERROR.code){
 
                     System.out.println(ServerError.getStringFromValue(buffer[3]).libelle);
-                    //vue.getTxtInfoArea().append(ServerError.getStringFromValue(buffer[3]).libelle +"\n");
+                    vue.getTxtInfoArea().append(ServerError.getStringFromValue(buffer[3]).libelle +"\n");
                     return buffer[3];
 
                 }
 
-                //vue.getTxtInfoArea().append("Le fichier à bien été reçu \n ");
+                vue.getTxtInfoArea().append("Le fichier à bien été reçu \n");
                 file.close();
 
             }
 
 
         } catch (UnknownHostException e){
+
+            vue.getTxtInfoArea().append("Erreur -1 : IP indéterminée\n");
             System.out.print("Erreur -1 : Ip indéterminée ");
             e.printStackTrace();
             return -1;
 
         } catch (SocketException e){
+            vue.getTxtInfoArea().append("Erreur -2 : Problème de création ou d'accès au socket\n");
             System.out.println("Erreur -2 : Problème de création ou d'accès au socket");
             e.printStackTrace();
             return -2;
         } catch (IOException e){
+            vue.getTxtInfoArea().append("Erreur -3 : Problème réseau\n");
             System.out.println("Erreur -3 : Problème réseau");
             e.printStackTrace();
             return -3;
         } catch (StackOverflowError e) {
+            vue.getTxtInfoArea().append("Erreur -5 : Espace disque insuffisant\n");
             System.out.println("Erreur -5 : Espace disque insuffisant");
             e.printStackTrace();
             return -5;
         } catch (Exception e) {
+            vue.getTxtInfoArea().append("Erreur -6 : Problème inconnu\n");
             System.out.println("Erreur -6 : Problème inconnu");
             e.printStackTrace();
             return -6;
