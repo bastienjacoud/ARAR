@@ -279,10 +279,9 @@ public class Client {
 
                 }
 
-                vue.getTxtInfoArea().append("Le fichier à bien été reçu \n");
-                file.close();
-
             }
+            vue.getTxtInfoArea().append("Le fichier à bien été reçu \n");
+            file.close();
 
 
         } catch (UnknownHostException e){
