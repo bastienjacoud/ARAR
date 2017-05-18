@@ -6,20 +6,24 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Text?>
+<?import javafx.scene.text.TextFlow?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller">
    <children>
-      <TabPane fx:id="tab" layoutY="100.0" prefHeight="300.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE">
+      <TabPane fx:id="tab" layoutY="60.0" prefHeight="340.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
           <Tab text="Envoi">
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <Text layoutX="63.0" layoutY="80.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Chemin local :" />
-                        <TextField fx:id="tfPathLocalEnv" layoutX="164.0" layoutY="58.0" prefHeight="31.0" prefWidth="389.0" />
+                        <Text layoutX="48.0" layoutY="35.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Chemin local :" />
+                        <TextField fx:id="tfPathLocalEnv" layoutX="229.0" layoutY="74.0" prefHeight="31.0" prefWidth="324.0" />
                         <Text layoutX="63.0" layoutY="152.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Nom du fichier distant :" />
                         <TextField fx:id="tfNomFichierLocalEnv" layoutX="232.0" layoutY="130.0" prefHeight="31.0" prefWidth="322.0" />
-                        <Button fx:id="btEnv" layoutX="264.0" layoutY="231.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="90.0" text="Envoyer" />
+                        <Button fx:id="btEnv" layoutX="269.0" layoutY="171.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="90.0" text="Envoyer" />
+                        <TextField fx:id="tfPathLocalEnv1" layoutX="164.0" layoutY="14.0" prefHeight="31.0" prefWidth="389.0" />
+                        <Text layoutX="63.0" layoutY="95.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Nom du fichier local :" />
+                        <TextFlow layoutY="202.0" prefHeight="96.0" prefWidth="574.0" />
                      </children>
                   </AnchorPane>
             </content>
@@ -30,18 +34,21 @@
                      <children>
                         <Text layoutX="63.0" layoutY="152.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Chemin local :" />
                         <TextField fx:id="tfPathLocalRec" layoutX="164.0" layoutY="130.0" prefHeight="31.0" prefWidth="389.0" />
-                        <Text layoutX="63.0" layoutY="80.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Nom du fichier distant :" />
-                        <TextField fx:id="tfNomFichierDistantRec" layoutX="232.0" layoutY="58.0" prefHeight="31.0" prefWidth="322.0" />
-                        <Button fx:id="btRec" layoutX="264.0" layoutY="231.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="90.0" text="Récupérer" />
+                        <Text layoutX="63.0" layoutY="54.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Nom du fichier distant :" />
+                        <TextField fx:id="tfNomFichierDistantRec" layoutX="231.0" layoutY="33.0" prefHeight="31.0" prefWidth="322.0" />
+                        <Button fx:id="btRec" layoutX="255.0" layoutY="174.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="90.0" text="Récupérer" />
+                        <Text layoutX="63.0" layoutY="105.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Nom du fichier local :" />
+                        <TextField fx:id="tfNomFichierDistantRec1" layoutX="231.0" layoutY="84.0" prefHeight="31.0" prefWidth="322.0" />
+                        <TextFlow layoutY="205.0" prefHeight="96.0" prefWidth="574.0" />
                      </children>
                   </AnchorPane>
             </content>
           </Tab>
         </tabs>
       </TabPane>
-      <Text layoutX="45.0" layoutY="58.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Adresse :" />
-      <Text layoutX="272.0" layoutY="59.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Port :" />
-      <TextField fx:id="tfAdresse" layoutX="120.0" layoutY="37.0" prefHeight="31.0" prefWidth="119.0" />
-      <TextField fx:id="tfPort" layoutX="323.0" layoutY="37.0" prefHeight="31.0" prefWidth="77.0" />
+      <Text layoutX="45.0" layoutY="43.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Adresse :" />
+      <Text layoutX="273.0" layoutY="43.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Port :" />
+      <TextField fx:id="tfAdresse" layoutX="121.0" layoutY="22.0" prefHeight="31.0" prefWidth="119.0" />
+      <TextField fx:id="tfPort" layoutX="316.0" layoutY="22.0" prefHeight="31.0" prefWidth="77.0" />
    </children>
 </AnchorPane>

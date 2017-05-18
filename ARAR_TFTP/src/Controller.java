@@ -3,6 +3,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 
 public class Controller {
 
@@ -30,6 +31,12 @@ public class Controller {
 	@FXML
 	private Button btRec;
 
+	@FXML
+	private TextFlow tfRec;
+
+	@FXML
+	private TextFlow tfEnv;
+
 	private MainClient _mainClient;
 
 	public Controller()
@@ -43,10 +50,22 @@ public class Controller {
 
 	}
 
+	public void Envoi()
+	{
+
+	}
+
+	public void Reception()
+	{
+		//String
+		//_mainClient.GetClient().receiveFile(fileName, path, localFileName, address, port)
+	}
+
 	public void SetMain (MainClient mainClient)
 	{
 		this._mainClient = mainClient;
-
+		btEnv.setOnMouseClicked(mouseEvent -> Envoi());
+		btRec.setOnMouseClicked(mouseEvent -> Reception());
 	}
 
 

@@ -13,6 +13,8 @@ public class MainClient extends Application {
 	private Stage primaryStage;
     private BorderPane rootLayout;
 
+    private Client _client;
+
     @Override
     public void start(Stage primaryStage) {
         this.primaryStage = primaryStage;
@@ -21,6 +23,11 @@ public class MainClient extends Application {
         initRootLayout();
 
         showPersonOverview();
+    }
+
+    public Client GetClient()
+    {
+    	return _client;
     }
 
     /**
